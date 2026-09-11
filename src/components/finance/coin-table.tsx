@@ -2,8 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell } from "../ui/table";
 import type { CoinMarketsItem } from "@/models/coin-gecko";
+import { useNavigate } from "react-router";
 
 export function CoinTable() {
+    const navigate = useNavigate();
     const [coins, setCoins] = useState<CoinMarketsItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -32,6 +34,10 @@ export function CoinTable() {
 
         return () => controller.abort();
     }, []);
+
+    const navigateToCoinDetail = (coinId: string) => {
+        navigate(`/coin/${coinId}`);
+    };
 
     const formatCurrency = (value: number | null) =>
         value === null
@@ -65,11 +71,13 @@ export function CoinTable() {
                         </TableRow>
                     )}
                     {!isLoading && !error && coins.map((coin) => (
-                        <TableRow key={coin.id}>
-                            <TableCell>{coin.name} ({coin.symbol.toUpperCase()})</TableCell>
-                            <TableCell>{formatCurrency(coin.current_price)}</TableCell>
-                            <TableCell>{formatCurrency(coin.total_volume)}</TableCell>
-                            <TableCell>{formatCurrency(coin.market_cap)}</TableCell>
+                        <TableRow key={coin.id} onClick={() => navigateToCoinDetail(coin.id)}>
+                            
+                                <TableCell>{coin.name} ({coin.symbol.toUpperCase()})</TableCell>
+                                <TableCell>{formatCurrency(coin.current_price)}</TableCell>
+                                <TableCell>{formatCurrency(coin.total_volume)}</TableCell>
+                                <TableCell>{formatCurrency(coin.market_cap)}</TableCell>
+                    
                         </TableRow>
                     ))}
                 </TableBody>
