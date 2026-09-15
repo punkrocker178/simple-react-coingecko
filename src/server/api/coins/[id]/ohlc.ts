@@ -8,8 +8,9 @@ export default defineHandler(async (event) => {
     try {
         const params: Partial<CoinMarketsQuery> = getQuery(event);
         params.vs_currency = params.vs_currency || 'usd';
+        const coinId = event.context.params!.id;
 
-        const { data } = await coinApi.get<CoinMarketsResponse>(`/coins/markets`, {
+        const { data } = await coinApi.get<CoinMarketsResponse>(`/coins/${coinId}/ohlc`, {
             params,
             headers: {
                 'x-cg-demo-api-key': event.req.headers.get('x-cg-demo-api-key') || '',
