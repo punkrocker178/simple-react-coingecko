@@ -220,24 +220,41 @@ export function CoinDetail() {
   };
 
   return (
-    <>
-      <div>
-        {!canRenderCoin ? (
-          "Loading..."
-        ) : (
-          <div>
-            <div>{`${coinDetail?.name} (${coinDetail?.symbol})`}</div>
-            <div>{coinDetail.description?.en}</div>
-            <ButtonGroup>
-              <Button onClick={() => changeChartType("candlestick")}>
-                Candlesticks
-              </Button>
-              <Button onClick={() => changeChartType("line")}>Line</Button>
-            </ButtonGroup>
-            <EchartWrapper options={echartOptions}></EchartWrapper>
+    <section className="space-y-4 sm:space-y-6">
+      {!canRenderCoin ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm sm:p-6">
+          Loading...
+        </div>
+      ) : (
+        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+          <header className="space-y-2">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+              Asset Details
+            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              {`${coinDetail?.name} (${coinDetail?.symbol})`}
+            </h1>
+          </header>
+
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <ButtonGroup className="flex-wrap">
+                <Button onClick={() => changeChartType("candlestick")}>
+                  Candlesticks
+                </Button>
+                <Button onClick={() => changeChartType("line")}>Line</Button>
+              </ButtonGroup>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4">
+              <div className="mb-3 text-sm leading-6 text-slate-600">
+                {coinDetail.description?.en}
+              </div>
+              <EchartWrapper options={echartOptions} />
+            </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </section>
   );
 }

@@ -48,27 +48,33 @@ export function CoinTable() {
             }).format(value);
 
     return (
-        <div>
-            <Table>
-                <TableCaption>Current cryptocurrency market data.</TableCaption>
+        <div className="w-full overflow-hidden">
+            <Table className="min-w-full">
+                <TableCaption className="pb-3 text-left text-xs text-slate-500 sm:text-sm">
+                    Current cryptocurrency market data.
+                </TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Coin</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>24h Change</TableHead>
-                        <TableHead>24h Volume</TableHead>
-                        <TableHead>Market Cap</TableHead>
+                        <TableHead className="px-3 py-3 text-xs uppercase tracking-wide text-slate-500 sm:px-4">Coin</TableHead>
+                        <TableHead className="px-3 py-3 text-xs uppercase tracking-wide text-slate-500 sm:px-4">Price</TableHead>
+                        <TableHead className="px-3 py-3 text-xs uppercase tracking-wide text-slate-500 sm:px-4">24h Change</TableHead>
+                        <TableHead className="px-3 py-3 text-xs uppercase tracking-wide text-slate-500 sm:px-4">24h Volume</TableHead>
+                        <TableHead className="px-3 py-3 text-xs uppercase tracking-wide text-slate-500 sm:px-4">Market Cap</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {isLoading && (
                         <TableRow>
-                            <TableCell colSpan={4}>Loading market data...</TableCell>
+                            <TableCell className="px-3 py-4 text-sm text-slate-600 sm:px-4" colSpan={5}>
+                                Loading market data...
+                            </TableCell>
                         </TableRow>
                     )}
                     {error && (
                         <TableRow>
-                            <TableCell colSpan={4}>{error}</TableCell>
+                            <TableCell className="px-3 py-4 text-sm text-red-600 sm:px-4" colSpan={5}>
+                                {error}
+                            </TableCell>
                         </TableRow>
                     )}
                     {!isLoading && !error && coins.map((coin) => {
@@ -78,19 +84,21 @@ export function CoinTable() {
 
                             let priceChangeDisplay = null;
 
-                            if (coin.price_change_24h &&coin.price_change_24h > 0) {
-                                priceChangeDisplay = <span className="text-green-500">{priceChangeData}</span>;
+                            if (coin.price_change_24h && coin.price_change_24h > 0) {
+                                priceChangeDisplay = <span className="font-medium text-green-600">{priceChangeData}</span>;
                             } else if (coin.price_change_24h && coin.price_change_24h < 0) {
-                                priceChangeDisplay = <span className="text-red-500">{priceChangeData}</span>;
+                                priceChangeDisplay = <span className="font-medium text-red-600">{priceChangeData}</span>;
                             }
 
                         return (
                             <TableRow key={coin.id} onClick={() => navigateToCoinDetail(coin.id)}>
-                                <TableCell>{coin.name} ({coin.symbol.toUpperCase()})</TableCell>
-                                <TableCell>{formatCurrency(coin.current_price)}</TableCell>
-                                <TableCell>{priceChangeData ? priceChangeDisplay : '-'}</TableCell>
-                                <TableCell>{formatCurrency(coin.total_volume)}</TableCell>
-                                <TableCell>{formatCurrency(coin.market_cap)}</TableCell>
+                                <TableCell className="px-3 py-3 text-sm font-medium text-slate-900 sm:px-4">
+                                    {coin.name} ({coin.symbol.toUpperCase()})
+                                </TableCell>
+                                <TableCell className="px-3 py-3 text-sm text-slate-700 sm:px-4">{formatCurrency(coin.current_price)}</TableCell>
+                                <TableCell className="px-3 py-3 text-sm sm:px-4">{priceChangeData ? priceChangeDisplay : '-'}</TableCell>
+                                <TableCell className="px-3 py-3 text-sm text-slate-700 sm:px-4">{formatCurrency(coin.total_volume)}</TableCell>
+                                <TableCell className="px-3 py-3 text-sm text-slate-700 sm:px-4">{formatCurrency(coin.market_cap)}</TableCell>
                             </TableRow>
                         );
                     })}

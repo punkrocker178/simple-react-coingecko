@@ -24,7 +24,15 @@ export function EchartWrapper({ options }: { options?: EChartsOption }) {
     return () => instance?.dispose();
   }, [chartRef, options]);
 
-  return options &&  Object.keys(options).length > 0 ? 
-  <div ref={chartRef} style={{ width: "100%", height: "400px" }}></div> : 
-  <div>No data</div>;
+  return options && Object.keys(options).length > 0 ? (
+    <div
+      ref={chartRef}
+      className="h-[260px] w-full sm:h-[320px] lg:h-[400px]"
+      style={{ width: "100%" }}
+    />
+  ) : (
+    <div className="flex h-[200px] w-full items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-100 text-sm text-slate-500 sm:h-[260px]">
+      No data
+    </div>
+  );
 }
