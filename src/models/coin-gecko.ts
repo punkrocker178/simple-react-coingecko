@@ -47,6 +47,8 @@ export interface CoinGeckoMarketChartResponse {
   total_volumes: [number, number][];
 }
 
+export type CoinGeckoOhlcResponse = [number, number, number, number, number][];
+
 export interface CoinMarketsItem {
   id: string;
   symbol: string;

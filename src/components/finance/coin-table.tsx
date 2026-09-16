@@ -1,39 +1,15 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell } from "../ui/table";
 import type { CoinMarketsItem } from "@/models/coin-gecko";
 import { useNavigate } from "react-router";
 
-export function CoinTable() {
+interface CoinTableProps {
+    coins: CoinMarketsItem[];
+    isLoading: boolean;
+    error: string | null;
+}
+
+export function CoinTable({ coins, isLoading, error }: CoinTableProps) {
     const navigate = useNavigate();
-    const [coins, setCoins] = useState<CoinMarketsItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const controller = new AbortController();
-
-        async function fetchCoins() {
-            try {
-                const { data } = await axios.get<CoinMarketsItem[]>('/api/coins/markets', {
-                    signal: controller.signal,
-                });
-                setCoins(data);
-            } catch (error: unknown) {
-                if (!axios.isCancel(error)) {
-                    setError('Unable to load market data.');
-                }
-            } finally {
-                if (!controller.signal.aborted) {
-                    setIsLoading(false);
-                }
-            }
-        }
-
-        void fetchCoins();
-
-        return () => controller.abort();
-    }, []);
 
     const navigateToCoinDetail = (coinId: string) => {
         navigate(`/coin/${coinId}`);

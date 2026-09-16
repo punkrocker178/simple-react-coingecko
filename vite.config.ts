@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import path from 'node:path'
 
 // https://vite.dev/config/
@@ -11,5 +11,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(process.cwd(), 'src'),
     },
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
   },
 })

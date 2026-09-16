@@ -1,14 +1,18 @@
 import { EchartWrapper } from "@/components/chart/echart-wrapper";
 import type {
   CoinDetail,
-  CoinGeckoMarketChartResponse,
+  CoinGeckoOhlcResponse,
 } from "@/models/coin-gecko";
-import axios from "axios";
 import type { EChartsOption, SeriesOption } from "echarts";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
+import {
+  getCoinDetail,
+  getCoinMarketChart,
+  getCoinOhlc,
+} from "@/services/coin-service";
 
 export function CoinDetail() {
   const { id: coinId } = useParams();
@@ -22,20 +26,12 @@ export function CoinDetail() {
 
   async function fetchCoinDetail(abort: AbortController) {
     setIsLoading(true);
-    const data = await axios<CoinDetail>(`/api/coins/${coinId}`, {
-      signal: abort.signal,
-    });
-    setCoinDetail(data.data);
+    setCoinDetail(await getCoinDetail(coinId ?? "", abort.signal));
     setIsLoading(false);
   }
 
   async function fetchOhlc(abort: AbortController) {
-    const data = await axios(`/api/coins/${coinId}/ohlc`, {
-      params: {
-        days: 7,
-      },
-      signal: abort.signal,
-    });
+    const data = await getCoinOhlc(coinId ?? "", 7, abort.signal);
 
     const echartOptions: EChartsOption = {
       tooltip: {
@@ -53,27 +49,19 @@ export function CoinDetail() {
         min: (value) => roudToNearest(value.min),
         name: "Price (USD)",
       },
-      series: setupSeriesForCandlesticks(data.data) as SeriesOption[],
+      series: setupSeriesForCandlesticks(data) as SeriesOption[],
     };
     setEchartOptions(echartOptions);
   }
 
   async function fetchMarket(abort: AbortController) {
-    const response = await axios<CoinGeckoMarketChartResponse>(
-      `/api/coins/${coinId}/market_chart`,
-      {
-        params: {
-          days: 7,
-        },
-        signal: abort.signal,
-      },
-    );
+    const response = await getCoinMarketChart(coinId ?? "", 7, abort.signal);
 
-    const source = response.data.prices.map(([timestamp, price], index) => [
+    const source = response.prices.map(([timestamp, price], index) => [
       timestamp,
       price,
-      response.data.market_caps[index]?.[1] ?? null,
-      response.data.total_volumes[index]?.[1] ?? null,
+      response.market_caps[index]?.[1] ?? null,
+      response.total_volumes[index]?.[1] ?? null,
     ]);
 
     const echartOptions: EChartsOption = {
@@ -177,7 +165,7 @@ export function CoinDetail() {
     }
   };
 
-  const setupSeriesForCandlesticks = (data: any[]): SeriesOption[] => {
+  const setupSeriesForCandlesticks = (data: CoinGeckoOhlcResponse): SeriesOption[] => {
     return [
       {
         type: "candlestick",
