@@ -41,6 +41,12 @@ export interface CoinGeckoSparkline {
   price: number[];
 }
 
+export interface CoinGeckoMarketChartResponse {
+  prices: [number, number][];
+  market_caps: [number, number][];
+  total_volumes: [number, number][];
+}
+
 export interface CoinMarketsItem {
   id: string;
   symbol: string;
